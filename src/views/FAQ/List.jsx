@@ -94,7 +94,7 @@ const FAQList = (props) => {
     LangAPI.get(`/faqs?lang=${selectedLang}`)
       .then((response) => {
         if (response.status === 200) {
-          setFaqList(response?.data?.data);
+          setFaqList(response?.data);
         }
       })
       .catch((err) => {
@@ -168,7 +168,7 @@ const FAQList = (props) => {
 
             LangAPI.get(`/faqs?lang=${selectedLang}`).then((response) => {
               if (response.status === 200) {
-                setFaqList(response?.data?.data);
+                setFaqList(response?.data);
                 alert("FAQ Deleted Successfully")
               }
             })
@@ -272,7 +272,7 @@ const FAQList = (props) => {
           LangAPI.get(`/faqs?lang=${selectedLang}`)
             .then((response) => {
               if (response.status === 200) {
-                setFaqList(response?.data?.data);
+                setFaqList(response?.data);
                 setFAQ({ ...faq, section_content });
                 setShowFAQ(false)
               }

@@ -38,13 +38,13 @@ class PageList extends Component {
 
   options = {
     filterType: "checkbox",
-    responsive: "vertical"
+    responsive: "vertical",
+    pagination: false
   };
 
   componentDidMount() {
     LangAPI.get('/pages').then(response => {
-      console.log(response?.data?.data, "page data")
-      let rows = response?.data?.data;
+      let rows = response?.data
       this.setState({ rows: rows })
     })
   }
@@ -66,6 +66,9 @@ class PageList extends Component {
         <MUIDataTable
           title="Site Pages"
           columns={this.state.columns}
+          // rowsPerPageOptions={20}
+          // pageSize={15}
+          pagination={false}
           data={this.state.rows}
           options={this.options}
           loading

@@ -81,15 +81,15 @@ export default function UpdateFooter() {
   useEffect(() => {
 
     API.get(`/pages?lang=${selectedLang}`).then((response) => {
-      setPages(response?.data?.data);
-      // // let filteredArray = response.data?.data?.filter(function (array_el) {
+      setPages(response.data);
+      // // let filteredArray = response.data?.filter(function (array_el) {
       // //   return (
       // //     menuItems.filter(function (menuItems_el) {
       // //       return menuItems_el.text == array_el.name;
       // //     }).length == 0
       // //   );
       // // });
-      setPagesFilter(response?.data?.data);
+      setPagesFilter(response.data);
     });
   }, []);
 
@@ -97,7 +97,7 @@ export default function UpdateFooter() {
 
     API.get(`/common?lang=${selectedLang}`).then(response => {
 
-      const contactdata = response?.data?.data.find((x) => x.type === "footer");
+      const contactdata = response.data.find((x) => x.type === "footer");
       if (contactdata) {
         setFooterContent(contactdata);
       } else {

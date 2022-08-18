@@ -41,7 +41,7 @@ export default function AddFAQDialog(props) {
 
     const getDiningData = () => {
         LangAPI.get(`/dinings?lang=${selectedLang}`).then(response => {
-            const allData = response.data?.data;
+            const allData = response.data;
             setDiningData(allData);
         })
             .catch(err => {
@@ -53,7 +53,7 @@ export default function AddFAQDialog(props) {
 
     const getRoomsData = () => {
         LangAPI.get(`/rooms?lang=${selectedLang}`).then(response => {
-            const allData = response.data?.data;
+            const allData = response.data;
             setRoomsData(allData);
         })
             .catch(err => {

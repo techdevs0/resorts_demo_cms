@@ -101,15 +101,9 @@ export default function AddGallery() {
   useEffect(() => {
     LangAPI.get(`/all-sections/${pageId}/${selectedLang}`).then(response => {
       if (response?.status === 200) {
-        // const { data } = response;
-        // setGallery(
-        //     {
-        //       banner: data.find(x => x.section_slug === "banner") || gallery.banner,
-        //     }
-        // )
-        if (response.data.data[0]) {
-          setGallery(response.data.data[0])
-          setSeoInfo(response.data.data[0]?.meta)
+        if (response.data[0]) {
+          setGallery(response.data[0])
+          setSeoInfo(response.data[0]?.meta)
         } else {
           setGallery({
             banner: {
@@ -146,23 +140,9 @@ export default function AddGallery() {
   }, [selectedLang]);
 
   const getGalleryImages = () => {
-    LangAPI.get(`/get_all_images`).then(response => {
+    LangAPI.get(`/files`).then(response => {
       if (response.status === 200) {
-        setImagesData(response.data?.data)
-      }
-    })
-  }
-
-  const getSEOInfo = () => {
-    API.get(`/meta/${pageId}`).then(response => {
-      if (response.status === 200) {
-        let seoInfoData = response.data;
-        if (seoInfoData) {
-          setSeoInfo(seoInfoData);
-        }
-        else {
-          seoInfoData(seoInfo);
-        }
+        setImagesData(response.data)
       }
     })
   }

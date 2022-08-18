@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,7 +12,7 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import API from 'utils/http';
+import API from 'langapi/http';
 import { loginSuccess } from 'redux/users/actions';
 import { connect } from 'react-redux';
 
@@ -65,23 +65,42 @@ function SignInSide(props) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+    useEffect(() => {
+        // API.post(`/register`, {
+        //     first_name: "adnan",
+        //     last_name: 'bashir',
+        //     email: 'admin@gmail.com',
+        //     password: "admin123"
+        // }).then(response => {
+        //     if (response.status === 200) {
+        //         alert(response.data?.message || "Success");
+        //         props.success();
+        //         window.location.reload(true);
+        //     }
+        // }).catch(err => alert("Something went wrong"));
+    }, [])
+    
     const handleSubmit = () => {
-        let formdata = new FormData();
-        formdata.append("email", email);
-        formdata.append("password", password);
 
-        if (email === "user@admin.com" && password === "admin") {
-            props.loginSuccess();
-        }
-        else{
-            alert("Invalid username/password. Please try again.");
-        }
+        // let formdata = new FormData();
+        // formdata.append("email", email);
+        // formdata.append("password", password);
 
-        API.post(`/auth/login`, formdata, {
-            'Content-Type': `multipart/form-data; boundary=${formdata._boundary}`,
-        }).then(response => {
+        // if (email === "admin@admin.com" && password === "admin") {
+        //     props.loginSuccess();
+        // }
+        // else{
+        //     alert("Invalid username/password. Please try again.");
+        // }
+
+        let data = {
+            email: email,
+            password: password
+        }
+        API.post(`/login`, data).then(response => {
             console.log(response.data)
-        })
+            props.loginSuccess();
+        }).catch(err => alert("Something went wrong"));
     }
 
     return (
@@ -142,11 +161,11 @@ function SignInSide(props) {
                                     Forgot password?
                                 </Link>
                             </Grid>
-                            {/* <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid> */}
+                            <Grid item>
+                                <Link href="#" variant="body2">
+                                {"Don't have an account? Sign Up"}
+                                </Link>
+                            </Grid>
                         </Grid>
                         <Box mt={5}>
                             <Copyright />

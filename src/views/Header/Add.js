@@ -71,10 +71,10 @@ export default function UpdateHeader() {
     API.get(`/drop-down`).then((response) => {
 
       let a = []
-      if (response?.data?.data?.length > 0) {
+      if (response?.data?.length > 0) {
         // response.data.data.forEach(element => {
         let pages = []
-        response.data.data[1].forEach(element => {
+        response.data[1].forEach(element => {
           let obj = { ...element }
           obj.name = obj.post_name
           obj.name_de = obj.name_de || ""
@@ -83,7 +83,7 @@ export default function UpdateHeader() {
           obj.base_url = "dining"
           pages.push(obj)
         });
-        response.data.data[0].forEach(element => {
+        response.data[0].forEach(element => {
           let obj = { ...element }
           obj.name = obj.post_name
           obj.name_de = obj.name_de || ""
@@ -93,14 +93,14 @@ export default function UpdateHeader() {
           pages.push(obj)
         });
 
-        a = [...response?.data?.data[2], ...pages]
+        a = [...response.data[2], ...pages]
         console.log(a, "element")
         setPages(a);
       }
       setPagesFilter(a);
     });
 
-    // // let filteredArray = response.data?.data?.filter(function (array_el) {
+    // // let filteredArray = response.data?.filter(function (array_el) {
     // //   return (
     // //     menuItems.filter(function (menuItems_el) {
     // //       return menuItems_el.text == array_el.name;
@@ -116,7 +116,7 @@ export default function UpdateHeader() {
 
     API.get(`/common?lang=${selectedLang}`).then(response => {
 
-      const contactdata = response?.data?.data.find((x) => x.type === "header");
+      const contactdata = response.data.find((x) => x.type === "header");
       if (contactdata) {
         setHeaderContent(contactdata);
       } else {

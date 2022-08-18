@@ -139,7 +139,7 @@ class RoomsList extends Component {
 
   getData() {
     LangAPI.get(`/rooms?lang=${this.state.selectedLang}`).then((response) => {
-      let rows = response?.data?.data;
+      let rows = response?.data;
       console.log(rows, "rows")
       this.setState({ rows: rows });
     });
@@ -151,7 +151,8 @@ class RoomsList extends Component {
         .then((response) => {
           if (response.status === 200) {
             alert("Room deleted successfully !");
-            this.getData();
+            
+            // this.getData();
           }
         })
         // .then(() => {

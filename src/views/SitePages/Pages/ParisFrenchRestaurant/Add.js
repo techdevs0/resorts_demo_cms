@@ -164,9 +164,9 @@ export default function ParisFrenchRestaurant() {
   }, [])
 
   const getGalleryImages = () => {
-    LangAPI.get(`/get_all_images`).then((response) => {
+    LangAPI.get(`/files`).then((response) => {
         if (response.status === 200) {
-            setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
+            setImagesData(response.data?.map((x) => ({ ...x, isChecked: false })));
         }
     });
 };

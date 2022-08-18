@@ -110,7 +110,7 @@ export const WeddingDetail = React.memo(function ReviewCard() {
   useEffect(() => {
     LangAPI.get(`/weddings/${params.id}?lang=${lang}`).then(response => {
       if (response.status === 200) {
-        setWedding(response.data?.data)
+        setWedding(response.data)
         setUploads(response.data?.uploads)
       }
     })

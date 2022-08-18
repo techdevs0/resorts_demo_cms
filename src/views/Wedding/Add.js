@@ -73,19 +73,15 @@ export default withRouter(function WeddingAdd(props) {
       // setPostId(id);
       // LangAPI.get(`/weddings/${id}/edit`).then(response => {
       LangAPI.get(`/weddings/${id}?lang=${selectedLang}`).then(response => {
-        if (response?.data?.status === '200') {
-          // console.log(response?.data,"response?.data")
-          // return false;
-          // let data = { ...response?.data?.wedding_details };
-          // data.route = website_url + data.route;
-          if (response?.data?.data) {
-            setWedding(response?.data?.data);
-            setThumbnailPreview(response?.data?.data.thumbnailPreview)
+        console.log(response,"response?.data")
+        if (response?.status === 200) {
+          if (response?.data) {
+            setWedding(response?.data);
+            setThumbnailPreview(response?.data.thumbnailPreview)
           } else {
             setWedding(initialObject);
             setThumbnailPreview(null)
           }
-          // setUploadsPreview(response.data?.uploads);
         }
       })
     }
@@ -96,9 +92,9 @@ export default withRouter(function WeddingAdd(props) {
   }, [selectedLang])
 
   const getGalleryImages = () => {
-    LangAPI.get(`/get_all_images`).then((response) => {
+    LangAPI.get(`/files`).then((response) => {
       if (response.status === 200) {
-        setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
+        setImagesData(response.data?.map((x) => ({ ...x, isChecked: false })));
       }
     });
   };
@@ -158,7 +154,7 @@ export default withRouter(function WeddingAdd(props) {
     finalWedding.route = "wedding";
     finalWedding.images_list = JSON.stringify(selectedImages);
     finalWedding.thumbnailPreview = thumbnailPreview;
-    // finalWedding.is_indexed_or_is_followed = `${finalWedding.is_indexed},${finalWedding.is_followed}`;
+    
     if (!finalWedding.name || finalWedding.name == "") {
       alert("Please Enter Name before Submiting")
       return false;
@@ -171,35 +167,20 @@ export default withRouter(function WeddingAdd(props) {
       alert("Please Select Image before Submiting")
       return false;
     }
-    // if(!finalWedding.short_description || finalWedding.short_description == ""){
-    //   alert("Please Enter Short Description before Submiting")
-    //   return false;
-    // }
+    
+    if (isEdit) delete finalWedding._id
 
-    if (isEdit) {
-      LangAPI.post(`/weddings?lang=${selectedLang}`, finalWedding).then(response => {
-        console.log(response);
-        if (response.status === 200) {
-          alert("Record Updated");
-          // setWedding({ ...initialObject }); //resetting the form
-          props.history.push('/admin/weddings');
-        }
-      }).catch(err => alert("Something went wrong"));
-    } else {
       LangAPI.post(`/weddings?lang=${selectedLang}`, finalWedding).then(response => {
         console.log(response);
         if (response.status === 200) {
           alert("Record Updated");
           setPostId(response.data?.post_id);
-          // setWedding({ ...initialObject });
           props.history.push('/admin/weddings');
         }
       }).catch(err => alert("Something went wrong."))
-    }
   }
 
   const handleChange = (event) => {
-    // setAge(event.target.value as string);
     if (event.target.value != selectedLang) {
       setSelectedLang(event.target.value)
     }

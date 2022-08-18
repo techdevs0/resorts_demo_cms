@@ -26,9 +26,7 @@ import GalleryDialog from "../../../Common/GalleryDialog";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    flexGrow: 1,
-    // width:'60%',
-    // margin:'auto'
+    flexGrow: 1
   },
   paper: {
     padding: theme.spacing(2),
@@ -78,9 +76,9 @@ export default function BlogPage() {
   useEffect(() => {
     LangAPI.get(`/all-sections/${pageId}/${selectedLang}`).then(response => {
       if (response?.status === 200) {
-        if (response.data.data[0]) {
-          setGallery(response.data.data[0])
-          setSeoInfo(response?.data?.data[0]?.meta)
+        if (response.data[0]) {
+          setGallery(response.data[0])
+          setSeoInfo(response?.data[0]?.meta)
         } else {
           setGallery(initObj)
           setSeoInfo(seoObj)
@@ -93,23 +91,9 @@ export default function BlogPage() {
   }, [selectedLang]);
 
   const getGalleryImages = () => {
-    LangAPI.get(`/get_all_images`).then(response => {
+    LangAPI.get(`/files`).then(response => {
       if (response.status === 200) {
-        setImagesData(response.data?.data)
-      }
-    })
-  }
-
-  const getSEOInfo = () => {
-    API.get(`/meta/${pageId}`).then(response => {
-      if (response.status === 200) {
-        let seoInfoData = response.data;
-        if (seoInfoData) {
-          setSeoInfo(seoInfoData);
-        }
-        else {
-          seoInfoData(seoInfo);
-        }
+        setImagesData(response.data)
       }
     })
   }

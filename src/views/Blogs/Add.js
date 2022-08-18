@@ -45,16 +45,7 @@ export default withRouter(function AddRoom(props) {
         posted_by: "",
         author_img: "",
         author_details: "",
-        slug: "",
-
-        // meta_title: "",
-        // meta_description: "",
-        // schema_markup: "",
-        // route: website_url,
-        // inner_route: append_url,
-        // is_followed: true,
-        // is_indexed: true,
-        // is_indexed_or_is_followed: "0,0",
+        slug: ""
     };
     const [room, setRoom] = useState({ ...initialObject });
 
@@ -75,10 +66,10 @@ export default withRouter(function AddRoom(props) {
             setIsEdit(true);
             LangAPI.get(`/blogs/${id}?lang=${selectedLang}`).then((response) => {
                 if (response.status === 200) {
-                    let data = { ...response?.data?.data };
-                    console.log("response?.data?.data", response?.data?.data)
+                    let data = { ...response?.data };
+                    console.log("response?.data", response?.data)
                     // data.route = website_url + data.route;
-                    if (response?.data?.data) {
+                    if (response?.data) {
                         setRoom({ ...room, ...data });
                     } else {
                         setRoom({ ...initialObject });
@@ -92,9 +83,9 @@ export default withRouter(function AddRoom(props) {
     }, [selectedLang]);
 
     const getGalleryImages = () => {
-        LangAPI.get(`/get_all_images`).then((response) => {
+        LangAPI.get(`/files`).then((response) => {
             if (response.status === 200) {
-                setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
+                setImagesData(response.data?.map((x) => ({ ...x, isChecked: false })));
             }
         });
     };
@@ -224,23 +215,15 @@ export default withRouter(function AddRoom(props) {
         // finalRoom.inner_route = append_url;
         // finalRoom.is_indexed_or_is_followed = `${finalRoom.is_indexed ? "1" : "0"
         //     },${finalRoom.is_followed ? "1" : "0"}`;
-        if (isEdit) {
-            LangAPI.post(`/blogs?lang=${selectedLang}`, finalRoom).then((response) => {
-                if (response.status === 200) {
-                    alert("Blog Updated");
-                    setRoom({ ...initialObject }); //clear all fields
-                    props.history.push("/admin/blogs");
-                }
-            });
-        } else {
-            LangAPI.post(`/blogs?lang=${selectedLang}`, finalRoom).then((response) => {
-                if (response.status === 200) {
-                    alert("Blog Added");
-                    setRoom({ ...initialObject });
-                    props.history.push("/admin/blogs");
-                }
-            });
-        }
+        if (isEdit) delete finalRoom._id
+
+        LangAPI.post(`/blogs?lang=${selectedLang}`, finalRoom).then((response) => {
+            if (response.status === 200) {
+                alert("Blog Updated");
+                setRoom({ ...initialObject }); //clear all fields
+                props.history.push("/admin/blogs");
+            }
+        });
     };
 
     const handleChange = (event) => {

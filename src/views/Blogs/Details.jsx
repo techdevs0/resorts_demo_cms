@@ -101,22 +101,12 @@ export const RoomDetail = React.memo(function ReviewCard() {
   ]);
 
   useEffect(() => {
-    // API.get(`/blogs/${id}`).then(response => {
-    //   if (response.status === 200) {
-    //     setRoom(response.data?.data)
-    //   }
-    // })
+    
     LangAPI.get(`/blogs/${id}?lang=${lang}`).then((response) => {
       if (response.status === 200) {
-          let data = { ...response?.data?.data };
-          console.log("response?.data?.data",response?.data?.data)
-          setRoom(response.data?.data)
-          // data.route = website_url + data.route;
-          // if(response?.data?.data){
-            
-          // } else {
-          //   setRoom({ ...initialObject });
-          // }
+          let data = { ...response?.data };
+          console.log("response?.data",response?.data)
+          setRoom(response.data);
       }
   });
   }, [])

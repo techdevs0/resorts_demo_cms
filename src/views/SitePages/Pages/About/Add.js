@@ -112,20 +112,13 @@ export default function AddAboutUs() {
 
   useEffect(() => {
     // API.get(`/all_sections/${pageId}`).then(response => {
+      
     LangAPI.get(`/all-sections/${pageId}/${selectedLang}`).then(response => {
       if (response?.status === 200) {
-        // const { data } = response;
-        // setAbout(
-        //   {
-        //     intro: data.find(x => x.section_slug === "intro") || about.intro,
-        //     dine: data.find(x => x.section_slug === "dine") || about.dine,
-        //     banner: data.find(x => x.section_slug === "banner") || about.banner,
-        //   }
-        // )
-        if (response.data.data[0]) {
-          setAbout(response.data.data[0])
-          // setThumbnailPreview(response?.data?.data[0]?.banner?.section_avatar?.avatar || "")
-          setSeoInfo(response?.data?.data[0]?.meta)
+        
+        if (response.data[0]) {
+          setAbout(response.data[0])
+          setSeoInfo(response?.data[0]?.meta)
         } else {
           setAbout({
             banner: {
@@ -173,7 +166,6 @@ export default function AddAboutUs() {
             is_indexed: true,
             is_indexed_or_is_followed: '1,1',
           })
-
         }
       }
     });
@@ -185,9 +177,9 @@ export default function AddAboutUs() {
   }, [selectedLang]);
 
   const getGalleryImages = () => {
-    LangAPI.get(`/get_all_images`).then((response) => {
+    LangAPI.get(`/files`).then((response) => {
       if (response.status === 200) {
-        setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
+        setImagesData(response.data?.map((x) => ({ ...x, isChecked: false })));
       }
     });
   };

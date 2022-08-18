@@ -32,8 +32,6 @@ import {
 } from "@material-ui/core";
 import CKEditor from 'ckeditor4-react';
 import { ckEditorConfig } from "utils/data";
-// import { CKEditor } from '@ckeditor/ckeditor5-react';
-// import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 import { Image } from "@material-ui/icons";
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
@@ -43,7 +41,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useParams } from "react-router-dom";
 import API from "utils/http";
 import GalleryDialog from "../../../Common/GalleryDialog";
-// const website_url = "/";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -116,16 +113,10 @@ export default function AddCancellationPolicy() {
   useEffect(() => {
     LangAPI.get(`/all-sections/${pageId}/${selectedLang}`).then(response => {
       if (response?.status === 200) {
-        // const { data } = response;
-        // setCancellationPolicy(
-        //     {
-        //       intro: data.find(x => x.section_slug === "intro") || cancellationPolicy.intro,
-        //       banner: data.find(x => x.section_slug === "banner") || cancellationPolicy.banner,
-        //     }
-        // )
-        if (response.data.data[0]) {
-          setCancellationPolicy(response.data.data[0])
-          setSeoInfo(response.data?.data[0]?.meta)
+
+        if (response.data[0]) {
+          setCancellationPolicy(response.data[0])
+          setSeoInfo(response.data[0]?.meta)
         } else {
           setCancellationPolicy(initObj)
           setSeoInfo(seoObj)
@@ -139,26 +130,12 @@ export default function AddCancellationPolicy() {
   }, [selectedLang]);
 
   const getGalleryImages = () => {
-    LangAPI.get(`/get_all_images`).then((response) => {
+    LangAPI.get(`/files`).then((response) => {
       if (response.status === 200) {
-        setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
+        setImagesData(response.data?.map((x) => ({ ...x, isChecked: false })));
       }
     });
   };
-
-  const getSEOInfo = () => {
-    API.get(`/meta/${pageId}`).then(response => {
-      if (response.status === 200) {
-        let seoInfoData = response.data;
-        if (seoInfoData) {
-          setSeoInfo(seoInfoData);
-        }
-        else {
-          setSeoInfo(seoInfo);
-        }
-      }
-    })
-  }
 
   const handleInputChange = (e, section) => {
     let updatedAbout = { ...cancellationPolicy };
@@ -413,21 +390,6 @@ export default function AddCancellationPolicy() {
                       size="small"
                     />
                   </Grid>
-                  {/*<Grid item xs={12} sm={3}>*/}
-                  {/*</Grid>*/}
-                  {/*<Grid item xs={12} sm={3}>*/}
-                  {/*  <TextField*/}
-                  {/*      required*/}
-                  {/*      id="route"*/}
-                  {/*      name="route"*/}
-                  {/*      label="Permalink"*/}
-                  {/*      value={seoInfo.route}*/}
-                  {/*      variant="outlined"*/}
-                  {/*      fullWidth*/}
-                  {/*      onChange={handleRouteChange}*/}
-                  {/*      size="small"*/}
-                  {/*  />*/}
-                  {/*</Grid>*/}
                   <Grid item xs={12} sm={12}>
                     <TextField
                       required

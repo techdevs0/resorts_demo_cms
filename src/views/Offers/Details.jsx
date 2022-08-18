@@ -116,9 +116,9 @@ export const OfferDetail = React.memo(function ReviewCard() {
 
   useEffect(() => {
     LangAPI.get(`/offers/${params.id}?lang=${lang}`).then(response => {
-      if (response?.data?.data) {
-        setRoom(response?.data?.data)
-        setUploads(JSON.parse(response?.data?.data?.images_list))
+      if (response?.data) {
+        setRoom(response?.data)
+        setUploads(JSON.parse(response?.data?.images_list))
       }
     })
   }, [])

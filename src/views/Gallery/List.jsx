@@ -43,12 +43,10 @@ class GalleryList extends Component {
   };
 
   componentDidMount() {
-    LangAPI.get("/get_all_images")
+    LangAPI.get("/files")
       .then((response) => {
         if (response.status === 200) {
-          this.setState({ gallery: response.data.data });
-          // this.setState({ mainSrc: response.data.data[0] });
-          console.log(response.data.data)
+          this.setState({ gallery: response.data });
         }
       })
       .catch((err) => {
@@ -60,7 +58,7 @@ class GalleryList extends Component {
 
   handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this ?")) {
-      LangAPI.delete(`/offers/${id}`)
+      LangAPI.delete(`/files/${id}`)
         .then((response) => {
           if (response.status === 200) {
             alert("Offer deleted successfully !");
@@ -88,27 +86,23 @@ class GalleryList extends Component {
 
   handleMultipleSubmit = () => {
     let imagesFormData = new FormData();
+
     this.state.currentFiles.forEach((x) => {
-      imagesFormData.append("images[]", x.image);
-      imagesFormData.append("data[]", JSON.stringify(x));
+      imagesFormData.append("image", x.image);
     });
-    console.log("imagesFormData :: ", imagesFormData);
-    LangAPI.post(`/upload_media`, imagesFormData, {
-      headers: {
-        "Content-Type": `multipart/form-data; boundary=${imagesFormData._boundary}`,
-      },
-    })
+
+    LangAPI.post(`/files`, imagesFormData)
       .then((response) => {
         if (response.status === 200) {
-          alert(response?.data?.message || "Success");
+          alert("Success");
           this.setState({ currentFiles: [] });
         }
       })
       .then(() => {
-        LangAPI.get("/get_all_images").then((response) => {
+        LangAPI.get("/files").then((response) => {
           if (response.status === 200) {
-            this.setState({ gallery: response.data.data });
-            this.setState({ mainSrc: response.data.data[0] });
+            this.setState({ gallery: response.data });
+            this.setState({ mainSrc: response.data[0] });
           }
         });
       })
@@ -116,7 +110,7 @@ class GalleryList extends Component {
   };
 
   handleDelete = (id) => {
-    LangAPI.delete(`/delete_images/${id}`)
+    LangAPI.delete(`/files/${id}`)
       .then((response) => {
         if (response.status === 200) {
           alert("Image delete successfully.");
@@ -124,10 +118,10 @@ class GalleryList extends Component {
         }
       })
       .then(() => {
-        LangAPI.get("/get_all_images").then((response) => {
+        LangAPI.get("/files").then((response) => {
           if (response.status === 200) {
-            this.setState({ gallery: response.data.data });
-            this.setState({ mainSrc: response.data.data[0] });
+            this.setState({ gallery: response.data });
+            this.setState({ mainSrc: response.data[0] });
           }
         });
       })

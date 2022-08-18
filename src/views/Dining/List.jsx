@@ -150,7 +150,7 @@ class DiningList extends Component {
 
   getData() {
     LangAPI.get(`/dinings?lang=${this.state.selectedLang}`).then((response) => {
-      let rows = response?.data?.data;
+      let rows = response?.data;
       this.setState({ rows: rows });
     });
   }

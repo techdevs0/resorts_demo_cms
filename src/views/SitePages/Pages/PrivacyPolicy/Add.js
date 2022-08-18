@@ -123,9 +123,9 @@ export default function AddPrivacyPolicy() {
         //       banner: data.find(x => x.section_slug === "banner") || privacyPolicy.banner,
         //     }
         // )
-        if (response.data?.data[0]) {
-          setPrivacyPolicy(response.data.data[0])
-          setSeoInfo(response.data.data[0].meta)
+        if (response.data[0]) {
+          setPrivacyPolicy(response.data[0])
+          setSeoInfo(response.data[0].meta)
         } else {
           setPrivacyPolicy(initObj)
           setSeoInfo(seoObj)
@@ -138,9 +138,9 @@ export default function AddPrivacyPolicy() {
   }, [selectedLang]);
 
   const getGalleryImages = () => {
-    LangAPI.get(`/get_all_images`).then((response) => {
+    LangAPI.get(`/files`).then((response) => {
       if (response.status === 200) {
-        setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
+        setImagesData(response.data?.map((x) => ({ ...x, isChecked: false })));
       }
     });
   };

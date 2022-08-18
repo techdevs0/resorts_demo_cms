@@ -68,7 +68,7 @@ export default function Dashboard() {
   const getTodos = () => {
     API.get('/todo').then(response => {
       if (response?.status === 200) {
-        setTodos(response?.data?.data)
+        setTodos(response.data)
       }
     })
   }
@@ -87,7 +87,7 @@ export default function Dashboard() {
       .then(() => {
         API.get('/todo').then(response => {
           if (response?.status === 200) {
-            setTodos(response.data?.data)
+            setTodos(response.data)
           }
         })
       })
@@ -108,7 +108,7 @@ export default function Dashboard() {
       API.get('/todo').then(response => {
         if (response.status === 200) {
 
-          setTodos(response.data?.data);
+          setTodos(response.data);
           window.location.reload(true);
         }
       })

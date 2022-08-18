@@ -157,9 +157,9 @@ export default function AddLeisureInner() {
   useEffect(() => {
     LangAPI.get(`/all-sections/${pageId}/${selectedLang}`).then(response => {
       if (response?.status === 200) {
-        if (response?.data?.data[0]) {
-          setLeisureInner(response.data.data[0])
-          setSeoInfo(response?.data?.data[0]?.meta)
+        if (response.data[0]) {
+          setLeisureInner(response.data[0])
+          setSeoInfo(response.data[0]?.meta)
         } else {
           setLeisureInner(leisureObj)
           setSeoInfo(seoObj)
@@ -173,9 +173,9 @@ export default function AddLeisureInner() {
   }, [selectedLang])
 
   const getGalleryImages = () => {
-    LangAPI.get(`/get_all_images`).then((response) => {
+    LangAPI.get(`/files`).then((response) => {
       if (response.status === 200) {
-        setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
+        setImagesData(response.data?.map((x) => ({ ...x, isChecked: false })));
       }
     });
   };

@@ -110,14 +110,14 @@ export default function AddOffer(props) {
       // setPostId(id);
       LangAPI.get(`/offers/${id}?lang=${selectedLang}`).then((response) => {
         if (response.status === 200) {
-          let data = response?.data?.data || [];
+          let data = response?.data || [];
           data.route = website_url + data.route;
-          if (response?.data?.data) {
-            setOffer(response?.data?.data);
-            let images = JSON.parse(response.data?.data?.images_list)
+          if (response?.data) {
+            setOffer(response?.data);
+            let images = JSON.parse(response.data?.images_list)
             setSelectedImages(images);
-            setThumbnailPreview(response.data?.data?.thumbnailPreview);
-            setBannerThumbnailPreview(response?.data?.data?.banner_imgPreview);
+            setThumbnailPreview(response.data?.thumbnailPreview);
+            setBannerThumbnailPreview(response?.data?.banner_imgPreview);
           } else {
             setSelectedImages([]);
             setThumbnailPreview("");
@@ -138,9 +138,9 @@ export default function AddOffer(props) {
   }, [selectedLang]);
 
   const getGalleryImages = () => {
-    LangAPI.get(`/get_all_images`).then((response) => {
+    LangAPI.get(`/files`).then((response) => {
       if (response.status === 200) {
-        setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
+        setImagesData(response.data?.map((x) => ({ ...x, isChecked: false })));
       }
     });
   };
@@ -171,14 +171,7 @@ export default function AddOffer(props) {
 
   const handleImageSelect = (e, index) => {
     if (e.target.checked) {
-      // if (isSingle && !isBanner) {
-      // alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
-      //   setShowGallery(false);
-      //   return;
-      // } else if (!isSingle && isBanner ) {
-      //   alert("You can only select 1 image for banner. If you want to change image, deselect the image and then select a new one");
-      //   return;
-      // } else {
+
       if (isSingle && !isBanner && !isImagesList) {
         setOffer({ ...offer, thumbnail: imagesData[index].avatar, thumbnailPreview: imagesData[index].avatar });
         setThumbnailPreview(imagesData[index].avatar);
@@ -241,40 +234,18 @@ export default function AddOffer(props) {
     finalOffer.images_list = JSON.stringify(selectedImages);
 
     finalOffer.is_indexed_or_is_followed = `${finalOffer.is_indexed},${finalOffer.is_followed}`;
-    // console.log("====finalOffer====",finalOffer)
-    // return false;
 
-    if (isEdit) {
-      // finalOffer.images_list = [
-      //   ...JSON.parse(finalOffer.images_list),
-      //   ...selectedImages,
-      // ];
-      // finalOffer.images_list = JSON.stringify(finalOffer.images_list);
+    if (isEdit) delete finalOffer._id
 
       LangAPI.post(`/offers?lang=${selectedLang}`, finalOffer)
         .then((response) => {
           if (response.status === 200) {
-            alert("Record Updated");
-            // setOffer({ ...initialObject }); //resetting the form
-            // eslint-disable-next-line react/prop-types
+            alert("Record Updated")
             props.history.push("/admin/offers");
           }
         })
         .catch((err) => alert("Something went wrong"));
-    } else {
-      // finalOffer.images_list = JSON.stringify(selectedImages);
-
-      LangAPI.post(`/offers?lang=${selectedLang}`, finalOffer)
-        .then((response) => {
-          if (response.status === 200) {
-            alert("Record Added");
-            // setPostId(response.data?.post_id);
-            // setOffer({ ...initialObject });
-            props.history.push("/admin/offers");
-          }
-        })
-        .catch((err) => alert("Something went wrong."));
-    }
+    
   };
 
   const handleRemoveSelectedImage = (x, arrayListType) => {
@@ -307,21 +278,16 @@ export default function AddOffer(props) {
   }
 
   const handleChange = (event) => {
-    // setAge(event.target.value as string);
     if (event.target.value != selectedLang) {
       setSelectedLang(event.target.value)
     }
   };
-  // const handleInputChangePremium = (event) => {
-  //   // setAge(event.target.value as string);
 
-  //   let updatedOffer = { ...offer };
-  //   if (event.target.value != updatedOffer.is_premium) {
-  //     updatedOffer.is_premium = event.target.value;
-  //   }
-
-  //   setOffer(updatedOffer);
-  // };
+  const handleInputChangePremium = (event) => {
+    if (event.target.value != offer.is_premium) {
+      setOffer({ ...offer, is_premium: event.target.value})
+    }
+  };
 
   return (
     <div>
@@ -527,7 +493,7 @@ export default function AddOffer(props) {
                   </Grid>
                 </Grid>
               </Grid>
-              {/* <Grid item xs={12} sm={12}>
+              <Grid item xs={12} sm={12}>
                 <FormControl
                   variant="outlined"
                   size="small"
@@ -541,7 +507,7 @@ export default function AddOffer(props) {
                     id="is_premium"
                     name="is_premium"
                     value={offer?.is_premium}
-                    onChange={handleInputChangePremium}
+                    onChange={(e) => handleInputChangePremium(e)}
                     label="Type"
                     fullWidth
                   >
@@ -549,7 +515,7 @@ export default function AddOffer(props) {
                     <MenuItem value={1}>Preminum Offer</MenuItem>
                   </Select>
                 </FormControl>
-              </Grid> */}
+              </Grid>
               <Grid item xs={12} sm={12}>
                 <h4 style={{ fontWeight: "400" }}>Short Description</h4>
                 <CKEditor

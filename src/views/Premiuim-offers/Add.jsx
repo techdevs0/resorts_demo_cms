@@ -110,14 +110,14 @@ export default function AddOffer(props) {
       // setPostId(id);
       LangAPI.get(`/offers/${id}?lang=${selectedLang}`).then((response) => {
         if (response.status === 200) {
-          let data = response?.data?.data || [];
+          let data = response?.data || [];
           data.route = website_url + data.route;
-          if (response?.data?.data) {
-            setOffer(response?.data?.data);
-            let images = JSON.parse(response.data?.data?.images_list)
+          if (response?.data) {
+            setOffer(response?.data);
+            let images = JSON.parse(response.data?.images_list)
             setSelectedImages(images);
-            setThumbnailPreview(response.data?.data?.thumbnailPreview);
-            setBannerThumbnailPreview(response?.data?.data?.banner_imgPreview);
+            setThumbnailPreview(response.data?.thumbnailPreview);
+            setBannerThumbnailPreview(response?.data?.banner_imgPreview);
           } else {
             setSelectedImages([]);
             setThumbnailPreview("");
@@ -138,9 +138,9 @@ export default function AddOffer(props) {
   }, [selectedLang]);
 
   const getGalleryImages = () => {
-    LangAPI.get(`/get_all_images`).then((response) => {
+    LangAPI.get(`/files`).then((response) => {
       if (response.status === 200) {
-        setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
+        setImagesData(response.data?.map((x) => ({ ...x, isChecked: false })));
       }
     });
   };
@@ -244,37 +244,15 @@ export default function AddOffer(props) {
     // console.log("====finalOffer====",finalOffer)
     // return false;
 
-    if (isEdit) {
-      // finalOffer.images_list = [
-      //   ...JSON.parse(finalOffer.images_list),
-      //   ...selectedImages,
-      // ];
-      // finalOffer.images_list = JSON.stringify(finalOffer.images_list);
+    if (isEdit) delete finalOffer._id
 
-      LangAPI.post(`/offers?lang=${selectedLang}`, finalOffer)
-        .then((response) => {
-          if (response.status === 200) {
-            alert("Record Updated");
-            // setOffer({ ...initialObject }); //resetting the form
-            // eslint-disable-next-line react/prop-types
-            props.history.push("/admin/premium-offers");
-          }
-        })
-        .catch((err) => alert("Something went wrong"));
-    } else {
-      // finalOffer.images_list = JSON.stringify(selectedImages);
-
-      LangAPI.post(`/offers?lang=${selectedLang}`, finalOffer)
-        .then((response) => {
-          if (response.status === 200) {
-            alert("Record Added");
-            // setPostId(response.data?.post_id);
-            // setOffer({ ...initialObject });
-            props.history.push("/admin/premium-offers");
-          }
-        })
-        .catch((err) => alert("Something went wrong."));
-    }
+    LangAPI.post(`/offers?lang=${selectedLang}`, finalOffer).then((response) => {
+        if (response.status === 200) {
+          alert("Record Updated");
+          props.history.push("/admin/premium-offers");
+        }
+      }).catch((err) => alert("Something went wrong"));
+    
   };
 
   const handleRemoveSelectedImage = (x, arrayListType) => {

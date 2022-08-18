@@ -114,11 +114,11 @@ export default function AddWedding() {
   useEffect(() => {
     LangAPI.get(`/all-sections/${pageId}/${selectedLang}`).then(response => {
       if (response?.status === 200) {
-        console.log(response.data.data[0], "response.data.data")
-        if (response.data.data[0]) {
-          setWedding(response.data.data[0])
-          setThumbnailPreview(response?.data?.data[0]?.banner?.section_avatar?.avatar || "")
-          setSeoInfo(response?.data?.data[0]?.meta)
+        console.log(response.data[0], "response.data.data")
+        if (response.data[0]) {
+          setWedding(response.data[0])
+          setThumbnailPreview(response?.data[0]?.banner?.section_avatar?.avatar || "")
+          setSeoInfo(response?.data[0]?.meta)
         } else {
           setWedding({
             banner: {
@@ -193,9 +193,9 @@ export default function AddWedding() {
   }, [selectedLang])
 
   const getGalleryImages = () => {
-    LangAPI.get(`/get_all_images`).then((response) => {
+    LangAPI.get(`/files`).then((response) => {
       if (response.status === 200) {
-        setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
+        setImagesData(response.data?.map((x) => ({ ...x, isChecked: false })));
       }
     });
   };

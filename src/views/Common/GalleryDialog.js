@@ -54,19 +54,12 @@ export default function GalleryDialog(props) {
     const handleMultipleSubmit = () => {
         let imagesFormData = new FormData();        
         let image = [...currentFiles]
-        delete image[0].is360;
-        delete image[0].alt_text;
-
+        console.log(currentFiles,"currentFiles")
         currentFiles.forEach(x => {
             imagesFormData.append("image", x.image);
-            // imagesFormData.append("data[]", JSON.stringify(x))
         })
 
-        API.post(`/files`, imagesFormData, {
-            // headers: {
-            //     'Content-Type': `multipart/form-data`,
-            // }
-        }).then(response => {
+        API.post(`/files`, imagesFormData).then(response => {
             if (response.status === 200) {
                 alert("Files Uploaded");
                 setCurrentFiles([]);

@@ -120,7 +120,7 @@ class WeddingList extends Component {
 
   componentDidMount() {
     LangAPI.get(`/weddings?lang=${this.state.selectedLang}`).then((response) => {
-      let rows = response?.data?.data;
+      let rows = response?.data;
       console.log(rows, "rowsrowsrows")
       // this.setState({ rows: rows.filter((x) => x.post_type !== "page") });
       this.setState({ rows });
@@ -130,7 +130,7 @@ class WeddingList extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevState.selectedLang !== this.state.selectedLang) {
       LangAPI.get(`/weddings?lang=${this.state.selectedLang}`).then((response) => {
-        let rows = response?.data?.data;
+        let rows = response?.data;
         if (this.state.rows != rows) {
           // this.setState({ rows: rows.filter((x) => x.post_type !== "page") });
           this.setState({ rows });
@@ -151,7 +151,7 @@ class WeddingList extends Component {
         .then(() => {
           // debugger;
           LangAPI.get(`/weddings?lang=${this.state.selectedLang}`).then((response) => {
-            let rows = response?.data?.data;
+            let rows = response.data;
             // this.setState({ rows: rows.filter((x) => x.post_type !== "page") });
             this.setState({ rows });
           });

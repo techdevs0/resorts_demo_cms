@@ -109,8 +109,8 @@ export const DiningDetail = React.memo(function ReviewCard() {
   useEffect(() => {
     LangAPI.get(`/dinings/${params.id}?lang=${lang}`).then(response => {
       if (response.status === 200) {
-        setDining(response?.data?.data)
-        let imgs = JSON.parse(response?.data?.data.images_list)
+        setDining(response?.data)
+        let imgs = JSON.parse(response?.data.images_list)
         setUploads(imgs)
       }
     })

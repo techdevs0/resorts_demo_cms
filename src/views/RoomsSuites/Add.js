@@ -86,19 +86,19 @@ export default withRouter(function AddRoom(props) {
             // setPostId(id);
             LangAPI.get(`/rooms/${id}?lang=${selectedLang}`).then((response) => {
                 if (response.status === 200) {
-
-                    let data = { ...response?.data?.data };
+                    console.log(response?.data,"response?.data")
+                    let data = { ...response?.data };
                     data.route = website_url + data.route;
-                    if (response?.data?.data) {
+                    if (response?.data) {
                         setRoom({ ...room, ...data });
                         // setUploadsPreview(response.data?.uploads);
                         let images = []
-                        if (response?.data?.data.images_list) {
-                            images = JSON.parse(response?.data?.data.images_list)
+                        if (response?.data.images_list) {
+                            images = JSON.parse(response?.data.images_list)
                         }
                         setSelectedImages(images)
-                        setThumbnailPreview(response?.data?.data?.thumbnailPreview)
-                        setBannerThumbnailPreview(response?.data?.data?.banner_imgPreview)
+                        setThumbnailPreview(response?.data?.thumbnailPreview)
+                        setBannerThumbnailPreview(response?.data?.banner_imgPreview)
                     } else {
                         setRoom(initialObject);
                         setUploadsPreview(false);
@@ -117,10 +117,11 @@ export default withRouter(function AddRoom(props) {
     const getGalleryImages = () => {
         // alert("eee")
         LangAPI.get(`/files`).then((response) => {
+            console.log(response,"e response")
             if (response.status === 200) {
-                setImagesData(response.data.data);
+                setImagesData(response.data);
             }
-        }).catch((e) => console.log("ddddddddddddddd"));
+        }).catch((e) => console.log(e));
     };
 
     const handleInputChange = (e) => {
@@ -215,6 +216,7 @@ export default withRouter(function AddRoom(props) {
         finalRoom.images_list = JSON.stringify(selectedImages);
         finalRoom.is_indexed_or_is_followed = `${finalRoom.is_indexed ? "1" : "0"},${finalRoom.is_followed ? "1" : "0"}`;
 
+        // console.log('finalRoom',finalRoom);return false;
         if (!finalRoom.post_name || finalRoom.post_name == "") {
             alert("Please Add Room/Suite Name");
             return false;
@@ -257,11 +259,12 @@ export default withRouter(function AddRoom(props) {
         }
 
         if (isEdit) {
+            delete finalRoom._id;
             LangAPI.post(`/rooms?lang=${selectedLang}`, finalRoom).then((response) => {
                 if (response.status === 200) {
                     alert("Record Updated");
-                    setRoom({ ...initialObject }); //clear all fields
-                    props.history.push("/admin/room-suites");
+                    // setRoom({ ...initialObject }); //clear all fields
+                    // props.history.push("/admin/room-suites");
                 }
             });
         } else {
@@ -269,8 +272,8 @@ export default withRouter(function AddRoom(props) {
                 if (response.status === 200) {
                     setPostId(response.data?.post_id);
                     alert("Record Updated");
-                    setRoom({ ...initialObject });
-                    props.history.push("/admin/room-suites");
+                    // setRoom({ ...initialObject });
+                    // props.history.push("/admin/room-suites");
                 }
             });
         }

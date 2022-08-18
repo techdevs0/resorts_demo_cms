@@ -103,28 +103,18 @@ export default withRouter(function DiningAdd(props) {
   useEffect(() => {
     if (id && id != null) {
       setIsEdit(true);
-      // setPostId(id);
       LangAPI.get(`/dinings/${id}?lang=${selectedLang}`).then((response) => {
         if (response.status === 200) {
 
-          if (response?.data?.data) {
-            let data = { ...response?.data?.data };
-            // let meta = { ...response?.data?.meta[0] };
-            // data.meta_title = meta.meta_title;
-            // data.is_indexed_or_is_followed = meta.is_indexed_or_is_followed;
-            // data.meta_description = meta.meta_description;
-            // data.schema_markup = meta.schema_markup;
-            // data.route = website_url + data.route;
+          if (response?.data) {
+            let data = { ...response?.data };
             setDining(data);
-            // setUploadsPreview(response.data?.data?.images_list);
-            // console.log(response.data?.data?.images_list,"response.data?.data?.images_list");return false;
-            let images = JSON.parse(response.data?.data?.images_list)
+            let images = JSON.parse(response.data?.images_list)
             setSelectedImages(images)
-            setThumbnailPreview(response?.data?.data?.thumbnailPreview)
-            setBannerThumbnailPreview(response?.data?.data?.banner_imgPreview)
+            setThumbnailPreview(response?.data?.thumbnail)
+            setBannerThumbnailPreview(response?.data?.banner_imgPreview)
           } else {
             setDining(initialObject);
-            // setUploadsPreview([]);
             setSelectedImages([])
           }
 
@@ -138,9 +128,9 @@ export default withRouter(function DiningAdd(props) {
   }, [selectedLang]);
 
   const getGalleryImages = () => {
-    LangAPI.get(`/get_all_images`).then((response) => {
+    LangAPI.get(`/files`).then((response) => {
       if (response.status === 200) {
-        setImagesData(response.data?.data);
+        setImagesData(response.data);
       }
     });
   };
@@ -271,11 +261,11 @@ export default withRouter(function DiningAdd(props) {
       alert("Please Add Banner Text Before Submiting")
       return false;
     }
-    if (!finalDining.thumbnailPreview || finalDining.thumbnailPreview == "") {
+    if (!finalDining.thumbnail || finalDining.thumbnail == "") {
       alert("Please select Featured Image Before Submiting")
       return false;
     }
-    if (!finalDining.banner_imgPreview || finalDining.banner_imgPreview == "") {
+    if (!finalDining.banner_img || finalDining.banner_img == "") {
       alert("Please select Add Banner Image Before Submiting")
       return false;
     }
@@ -293,24 +283,16 @@ export default withRouter(function DiningAdd(props) {
     }
 
 
-    if (isEdit) {
-      LangAPI.post(`/dinings?lang=${selectedLang}`, finalDining).then((response) => {
-        if (response.status === 200) {
-          alert("Record Updated");
-          setDining({ ...initialObject }); //clear all fields
-          props.history.push("/admin/dining");
-        }
-      });
-    } else {
-      LangAPI.post(`/dinings?lang=${selectedLang}`, finalDining).then((response) => {
-        if (response.status === 200) {
-          // setPostId(response.data?.post_id);
-          alert("Record Updated");
-          setDining({ ...initialObject });
-          props.history.push("/admin/dining");
-        }
-      });
-    }
+    if (isEdit) delete finalDining._id;
+    
+    LangAPI.post(`/dinings?lang=${selectedLang}`, finalDining).then((response) => {
+      if (response.status === 200) {
+        alert("Record Updated");
+        setDining({ ...initialObject }); //clear all fields
+        props.history.push("/admin/dining");
+      }
+    });
+
   };
 
   const handleRemoveSelectedImage = (x, arrayListType) => {

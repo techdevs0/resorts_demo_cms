@@ -1,11 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
-// @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
-// core components
-// import GridItem from "components/Grid/GridItem.js";
-// import GridContainer from "components/Grid/GridContainer.js";
-// import CustomInput from "components/CustomInput/CustomInput.js";
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import LangAPI from "langapi/http";
@@ -21,8 +16,6 @@ import avatar from "assets/img/faces/marc.jpg";
 import { FormControl, FormControlLabel, Radio, RadioGroup, Select, MenuItem, TextField, CardMedia, CardActionArea, CardContent, CardActions } from "@material-ui/core";
 import CKEditor from 'ckeditor4-react';
 import { ckEditorConfig } from "utils/data";
-// import { CKEditor } from '@ckeditor/ckeditor5-react';
-// import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 import { Image } from "@material-ui/icons";
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
@@ -117,18 +110,9 @@ export default function AddAboutSeychelles() {
   useEffect(() => {
     LangAPI.get(`/all-sections/${pageId}/${selectedLang}`).then(response => {
       if (response?.status === 200) {
-        // const { data } = response;
-        // console.log(data,"data for page==============");
-        // setAboutSeychelles(
-        //   {
-        //     intro: data.find(x => x.section_slug === "intro") || initialObject.intro,
-        //     banner: data.find(x => x.section_slug === "banner") || initialObject.banner,
-        //     features: initialObject.features,
-        //   }
-        // )
-        if (response.data.data[0]) {
-          setAboutSeychelles(response.data.data[0])
-          setSeoInfo(response?.data?.data[0]?.meta)
+        if (response.data[0]) {
+          setAboutSeychelles(response.data[0])
+          setSeoInfo(response?.data[0]?.meta)
         } else {
           setAboutSeychelles(initialObject)
           setSeoInfo(seoObj)
@@ -142,26 +126,12 @@ export default function AddAboutSeychelles() {
   }, [selectedLang])
 
   const getGalleryImages = () => {
-    LangAPI.get(`/get_all_images`).then((response) => {
+    LangAPI.get(`/files`).then((response) => {
       if (response.status === 200) {
-        setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
+        setImagesData(response.data?.map((x) => ({ ...x, isChecked: false })));
       }
     });
   };
-
-  const getSEOInfo = () => {
-    API.get(`/meta/${pageId}`).then(response => {
-      if (response.status === 200) {
-        let seoInfoData = response.data;
-        if (seoInfoData) {
-          setSeoInfo(seoInfoData);
-        }
-        else {
-          seoInfoData(seoInfo);
-        }
-      }
-    })
-  }
 
   const handleInputChange = (e, section) => {
 
@@ -175,25 +145,8 @@ export default function AddAboutSeychelles() {
       setShowGallery(false);
     }, 500)
     if (e.target.checked) {
-      // if (isSingle && thumbnailPreview !== "") {
-      //   alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
-      //   return;
-      // } else {
       setAboutSeychelles({ ...aboutSeychelles, [section]: { ...aboutSeychelles[section], section_avatar: imagesData[index] } })
       setThumbnailPreview(imagesData[index].avatar)
-
-      // let imagesDataUpdated = imagesData.map((x, i) => {
-      //   if (i === index) {
-      //     return {
-      //       ...x,
-      //       isChecked: true
-      //     }
-      //   } else {
-      //     return x
-      //   }
-      // });
-      // setImagesData(imagesDataUpdated);
-      // }
     } else {
       setAboutSeychelles({ ...aboutSeychelles, [section]: { ...aboutSeychelles[section], section_avatar: "" } })
       setThumbnailPreview("")
@@ -211,74 +164,19 @@ export default function AddAboutSeychelles() {
     }
   }
 
-
-  const handleLinkChange = (e, index, section) => {
-    let updatedAboutSeychelles = { ...aboutSeychelles };
-    updatedAboutSeychelles[section].section_content[index][e.target.name] = e.target.value;
-    setAboutSeychelles(updatedAboutSeychelles);
-  }
-  const addNewLink = () => {
-    let updatedAboutSeychelles = { ...aboutSeychelles };
-    updatedAboutSeychelles.features.section_content.push({ id: aboutSeychelles.features.section_content?.length + 1, title: '', description: '' });
-    setAboutSeychelles(updatedAboutSeychelles);
-  }
-
-
   const handleSEOInputChange = (e) => {
     let updatedSeoInfo = { ...seoInfo };
     updatedSeoInfo[e.target.name] = e.target.value;
     setSeoInfo(updatedSeoInfo);
   }
 
-  // const handleRouteChange = (e) => {
-  //   let updatedSeoInfo = { ...seoInfo };
-  //   let splitValues = e.target.value.split(website_url);
-  //   let updatedValue = splitValues[1] ? splitValues[1].replace(/\s+/g, '-') : ""
-  //   updatedValue = updatedValue.replace(/--/g, '-')
-  //   updatedSeoInfo[e.target.name] = website_url + updatedValue;
-  //   setSeoInfo(updatedSeoInfo);
-  // }
-
-  const handleSEOSubmit = () => {
-    let updatedSeoInfo = seoInfo;
-    updatedSeoInfo.is_indexed_or_is_followed = `${updatedSeoInfo.is_indexed},${updatedSeoInfo.is_followed}`;
-
-    if (updatedSeoInfo.id > 0) {
-      API.put(`/meta/${pageId}`, updatedSeoInfo).then(response => {
-        if (response.status === 200) {
-          alert("Section updated successfully !");
-        }
-      }).catch(err => console.log(err))
-    } else {
-      API.post(`/meta`, updatedSeoInfo).then(response => {
-        if (response.status === 200) {
-          alert("Section updated successfully !");
-        }
-      }).catch(err => console.log(err))
-
-    }
-  }
-
 
   const handleSubmit = () => {
-    // let updatedAboutSeychelles = { ...aboutSeychelles };
-    // updatedAboutSeychelles.route = updatedAboutSeychelles.route.split(website_url)?.[1];
-
-    // API.post(`/add_section`, JSON.stringify(updatedAboutSeychelles[name]), {
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   }
-    // }).then(response => {
-    //   if (response.status === 200) {
-    //     alert("Section updated successfully !");
-    //   }
-    // }).catch(err => console.log(err))
 
     let updatedAboutSeychelles = { ...aboutSeychelles };
     updatedAboutSeychelles.meta = { ...seoInfo };
     updatedAboutSeychelles.page_id = pageId
     updatedAboutSeychelles.slug = "aboutSeychelles-sections"
-    // console.log("updatedAboutSeychelles",updatedAboutSeychelles); return false;
 
     LangAPI.post(`/add-section?lang=${selectedLang}`, updatedAboutSeychelles).then(response => {
       if (response.status === 200) {
@@ -289,7 +187,6 @@ export default function AddAboutSeychelles() {
   }
 
   const handleChange = (event) => {
-    // setAge(event.target.value as string);
     if (event.target.value != selectedLang) {
       setSelectedLang(event.target.value)
     }
@@ -480,80 +377,7 @@ export default function AddAboutSeychelles() {
                 </Grid>
               </AccordionDetails>
             </Accordion>
-            {/*<Accordion>*/}
-            {/*  <AccordionSummary*/}
-            {/*    expandIcon={<ExpandMoreIcon />}*/}
-            {/*    aria-controls="panel2a-content"*/}
-            {/*    id="panel2a-header"*/}
-            {/*  >*/}
-            {/*    <Typography className={classes.heading}>Features</Typography>*/}
-            {/*  </AccordionSummary>*/}
-            {/*  <AccordionDetails>*/}
-            {/*    /!* <h4 className="mt-4"></h4> *!/*/}
-            {/*    <Grid container spacing={2}>*/}
-            {/*      <Grid item xs={12}>*/}
-            {/*        <MaterialButton*/}
-            {/*          variant="outlined"*/}
-            {/*          component="span"*/}
-            {/*          className={classes.button}*/}
-            {/*          size="small"*/}
-            {/*          color="primary"*/}
-            {/*          onClick={() => addNewLink()}*/}
-            {/*        >*/}
-            {/*          Add a New Link*/}
-            {/*        </MaterialButton>*/}
-            {/*      </Grid>*/}
-            {/*      {*/}
-            {/*        aboutSeychelles?.features?.section_content?.map((x, index) => (*/}
-            {/*          <React.Fragment>*/}
-            {/*            <Grid item xs={12} sm={4}>*/}
-            {/*              <TextField*/}
-            {/*                required*/}
-            {/*                id={`title${x.id}`}*/}
-            {/*                name="title"*/}
-            {/*                label="Link Text"*/}
-            {/*                value={x.title}*/}
-            {/*                variant="outlined"*/}
-            {/*                fullWidth*/}
-            {/*                multiline*/}
-            {/*                rows={2}*/}
-            {/*                rowsMax={2}*/}
-            {/*                onChange={(e) => handleLinkChange(e, index, 'features')}*/}
-            {/*                size="small"*/}
-            {/*              />*/}
-            {/*            </Grid>*/}
-            {/*            <Grid item xs={12} sm={6}>*/}
-            {/*              <TextField*/}
-            {/*                required*/}
-            {/*                id={`description${x.id}`}*/}
-            {/*                name="description"*/}
-            {/*                label="Short Description"*/}
-            {/*                value={x.description}*/}
-            {/*                variant="outlined"*/}
-            {/*                fullWidth*/}
-            {/*                multiline*/}
-            {/*                rows={2}*/}
-            {/*                rowsMax={2}*/}
-            {/*                onChange={(e) => handleLinkChange(e, index, 'features')}*/}
-            {/*                size="small"*/}
-            {/*              />*/}
-            {/*            </Grid>*/}
-            {/*            <Grid item xs={12} sm={2}>*/}
-            {/*              <MaterialButton onClick={() => setAboutSeychelles({ ...aboutSeychelles, features: { ...aboutSeychelles.features, section_content: aboutSeychelles.features.section_content.filter(z => z.id !== x.id) } })} color="secondary" size="small" variant="outlined" style={{ height: '100%' }}>*/}
-            {/*                Delete Link*/}
-            {/*              </MaterialButton>*/}
-            {/*            </Grid>*/}
-            {/*          </React.Fragment>*/}
-            {/*        ))*/}
-            {/*      }*/}
-            {/*      <Grid item xs={12} sm={12}>*/}
-            {/*        <MaterialButton disabled={aboutSeychelles.features.section_content < 1} onClick={() => handleSubmit(aboutSeychelles.features.id, "features")} color="primary" variant="contained">*/}
-            {/*          Update Section*/}
-            {/*      </MaterialButton>*/}
-            {/*      </Grid>*/}
-            {/*    </Grid>*/}
-            {/*  </AccordionDetails>*/}
-            {/*</Accordion>*/}
+            
             <Accordion>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
@@ -577,21 +401,6 @@ export default function AddAboutSeychelles() {
                       size="small"
                     />
                   </Grid>
-                  {/*<Grid item xs={12} sm={3}>*/}
-                  {/*</Grid>*/}
-                  {/*<Grid item xs={12} sm={3}>*/}
-                  {/*  <TextField*/}
-                  {/*    required*/}
-                  {/*    id="route"*/}
-                  {/*    name="route"*/}
-                  {/*    label="Permalink"*/}
-                  {/*    value={seoInfo.route}*/}
-                  {/*    variant="outlined"*/}
-                  {/*    fullWidth*/}
-                  {/*    onChange={handleRouteChange}*/}
-                  {/*    size="small"*/}
-                  {/*  />*/}
-                  {/*</Grid>*/}
                   <Grid item xs={12} sm={12}>
                     <TextField
                       required
